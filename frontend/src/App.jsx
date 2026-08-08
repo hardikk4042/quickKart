@@ -1,7 +1,8 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
+import SplashScreen from '@components/common/SplashScreen';
 
 // Layout
 import Navbar from '@components/navbar/Navbar';
@@ -131,8 +132,13 @@ function AppRoutes() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
     <BrowserRouter>
+      {/* Splash screen — renders on top of everything, unmounts itself after animation */}
+      {showSplash && <SplashScreen onDone={() => setShowSplash(false)} />}
+
       <AppRoutes />
       <Toaster
         position="top-right"
