@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Variables ─────────────────────────────── */
+:root {
+  --brand:      #F6C90E;
+  --brand-dark: #D97706;
+  --dark:       #1A1A1A;
+  --text:       #0F0F0F;
+  --text-muted: #666666;
+  --border:     #E8E8E8;
+  --bg:         #FAFAFA;
+  --card:       #FFFFFF;
+  --success:    #22C55E;
+  --error:      #EF4444;
+  --warning:    #F59E0B;
+  --radius:     0.75rem;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow:     0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg:  0 8px 30px rgba(0,0,0,0.12);
+}
+
+/* ─── Base Reset ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C8C8C8; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #A8A8A8; }
+
+/* ─── Selection ──────────────────────────────────── */
+::selection { background: rgba(246,201,14,0.3); color: #0F0F0F; }
+
+/* ─── Custom Component Classes ───────────────────── */
+@layer components {
+  .btn-primary {
+    @apply bg-brand-500 hover:bg-brand-600 text-dark-900 font-semibold px-5 py-2.5 rounded-xl
+           transition-all duration-200 active:scale-95 shadow-brand text-sm;
+  }
+  .btn-secondary {
+    @apply bg-white border border-dark-100 hover:border-brand-500 text-dark-700 font-medium px-5 py-2.5 rounded-xl
+           transition-all duration-200 active:scale-95 text-sm;
+  }
+  .btn-ghost {
+    @apply text-dark-600 hover:text-dark-900 hover:bg-dark-50 font-medium px-4 py-2 rounded-xl
+           transition-all duration-200 text-sm;
+  }
+  .btn-danger {
+    @apply bg-error hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl
+           transition-all duration-200 active:scale-95 text-sm;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-card p-4;
+  }
+
+  .input {
+    @apply w-full border border-dark-100 rounded-xl px-4 py-2.5 text-sm font-medium
+           focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
+           placeholder:text-dark-300 transition-all duration-200;
+  }
+
+  .badge-discount {
+    @apply bg-green-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-md;
+  }
+  .badge-new {
+    @apply bg-brand-500 text-dark-900 text-xs font-bold px-1.5 py-0.5 rounded-md;
+  }
+  .badge-out {
+    @apply bg-dark-100 text-dark-400 text-xs font-medium px-1.5 py-0.5 rounded-md;
+  }
+
+  .section-title {
+    @apply text-xl font-bold text-dark-900;
+  }
+  .section-subtitle {
+    @apply text-sm text-dark-400 font-medium;
+  }
+
+  .nav-link {
+    @apply text-dark-500 hover:text-dark-900 font-medium text-sm transition-colors duration-150;
+  }
+  .nav-link-active {
+    @apply text-dark-900 font-semibold;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border
+           cursor-pointer transition-all duration-150;
+  }
+  .chip-active {
+    @apply bg-brand-500 border-brand-500 text-dark-900;
+  }
+  .chip-inactive {
+    @apply bg-white border-dark-100 text-dark-500 hover:border-brand-400 hover:text-dark-900;
+  }
+}
+
+/* ─── Utility Animations ─────────────────────────── */
+@layer utilities {
+  .animate-fade-in    { animation: fadeIn 0.2s ease-in-out; }
+  .animate-slide-up   { animation: slideUp 0.3s ease-out; }
+  .animate-slide-down { animation: slideDown 0.25s ease-out; }
+  .animate-scale-in   { animation: scaleIn 0.15s ease-out; }
+
+  .hover-lift {
+    @apply transition-transform duration-200 hover:-translate-y-0.5;
+  }
+  .press-effect {
+    @apply active:scale-95 transition-transform duration-100;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ─── Skeleton shimmer ───────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ─── Page transition wrapper ────────────────────── */
+.page-enter {
+  animation: fadeIn 0.2s ease-out;
+}
