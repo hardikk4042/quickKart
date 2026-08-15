@@ -14,21 +14,25 @@ export const useAuth = () => {
       toast.success(`Welcome back, ${user.name}!`);
       return { success: true, user };
     } catch (err) {
-      toast.error(err.message || 'Login failed');
-      return { success: false, error: err.message };
+      const message = err.message || err.error?.message || 'Login failed';
+      toast.error(message);
+      return { success: false, error: message };
     }
   };
 
   const register = async (data) => {
     try {
-      const { user, token } = await authAPI.register(data);
-      setUser(user, token);
-      localStorage.setItem('qk_token', token);
-      toast.success(`Welcome to QuickKart, ${user.name}!`);
-      return { success: true };
+      await authAPI.register(data);
+      // Automatically log in after registration to acquire JWT token & session
+      const loginRes = await authAPI.login({ email: data.email, password: data.password });
+      setUser(loginRes.user, loginRes.token);
+      localStorage.setItem('qk_token', loginRes.token);
+      toast.success(`Welcome to QuickKart, ${loginRes.user.name}!`);
+      return { success: true, user: loginRes.user };
     } catch (err) {
-      toast.error(err.message || 'Registration failed');
-      return { success: false, error: err.message };
+      const message = err.message || err.error?.message || 'Registration failed';
+      toast.error(message);
+      return { success: false, error: message };
     }
   };
 

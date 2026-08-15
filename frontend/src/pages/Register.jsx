@@ -18,12 +18,23 @@ export default function Register() {
     const e = {};
     if (!form.name.trim())    e.name = 'Name is required';
     if (!form.email.trim())   e.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Invalid email';
-    if (!form.phone.trim())   e.phone = 'Phone is required';
-    else if (!/^\d{10}$/.test(form.phone)) e.phone = 'Enter a valid 10-digit phone number';
-    if (!form.password)       e.password = 'Password is required';
-    else if (form.password.length < 6) e.password = 'Min 6 characters';
-    if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
+    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Invalid email address';
+    
+    if (form.phone.trim() && !/^\+?[\d\s\-()]{7,15}$/.test(form.phone.trim())) {
+      e.phone = 'Enter a valid phone number';
+    }
+
+    if (!form.password) {
+      e.password = 'Password is required';
+    } else if (form.password.length < 8) {
+      e.password = 'Password must be at least 8 characters long';
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(form.password)) {
+      e.password = 'Must contain at least 1 uppercase, 1 lowercase, and 1 number';
+    }
+
+    if (form.password !== form.confirmPassword) {
+      e.confirmPassword = 'Passwords do not match';
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -69,7 +80,7 @@ export default function Register() {
             <div className="space-y-4 mb-6">
               <Field id="reg-name"    label="Full Name"     icon={User}  field="name"    placeholder="Hardik" error={errors.name} />
               <Field id="reg-email"   label="Email"         icon={Mail}  field="email"   type="email" placeholder="you@example.com" error={errors.email} />
-              <Field id="reg-phone"   label="Phone Number"  icon={Phone} field="phone"   type="tel"   placeholder="9876543210" error={errors.phone} />
+              <Field id="reg-phone"   label="Phone Number (Optional)" icon={Phone} field="phone" type="tel" placeholder="9876543210" error={errors.phone} />
               <div>
                 <label htmlFor="reg-pass" className="text-xs font-semibold text-dark-700 mb-1.5 block">Password</label>
                 <div className="relative">
@@ -77,13 +88,19 @@ export default function Register() {
                   <input id="reg-pass" type={showPass ? 'text' : 'password'} value={form.password}
                     onChange={e => setForm({ ...form, password: e.target.value })}
                     className={`input pl-10 pr-10 ${errors.password ? 'border-error' : ''}`}
-                    placeholder="Min 6 characters" autoComplete="new-password" />
+                    placeholder="e.g. Password123!" autoComplete="new-password" />
                   <button type="button" onClick={() => setShowPass(!showPass)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-300 hover:text-dark-600">
                     {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                {errors.password && <p className="text-xs text-error mt-1">{errors.password}</p>}
+                {errors.password ? (
+                  <p className="text-xs text-error mt-1">{errors.password}</p>
+                ) : (
+                  <p className="text-[11px] text-dark-400 mt-1">
+                    Min 8 chars, 1 uppercase (A-Z), 1 lowercase (a-z), 1 number (0-9).
+                  </p>
+                )}
               </div>
               <div>
                 <label htmlFor="reg-confirm" className="text-xs font-semibold text-dark-700 mb-1.5 block">Confirm Password</label>

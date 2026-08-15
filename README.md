@@ -190,8 +190,10 @@ cd QuickKart
 
 The frontend is **fully functional with mock data** — no backend required to run it.
 
+> ⚠️ **Important:** The `package.json` is inside the `frontend/` folder, NOT the root. Always `cd frontend` first.
+
 ```bash
-# 1. Go into the frontend directory
+# 1. Go into the frontend directory  ← don't skip this step!
 cd frontend
 
 # 2. Install all dependencies

@@ -22,7 +22,6 @@ export default function Login() {
     if (!form.email.trim()) e.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Invalid email address';
     if (!form.password) e.password = 'Password is required';
-    else if (form.password.length < 6) e.password = 'Password must be at least 6 characters';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -34,20 +33,13 @@ export default function Login() {
     const result = await login(form);
     setLoading(false);
     if (result.success) {
-      const user = result.user;
-      if (user.role === 'admin')            navigate('/admin');
-      else if (user.role === 'store_manager') navigate('/store');
-      else if (user.role === 'delivery_partner') navigate('/delivery');
+      const role = result.user?.role?.toUpperCase();
+      if (role === 'ADMIN') navigate('/admin');
+      else if (role === 'STORE_MANAGER') navigate('/store');
+      else if (role === 'DELIVERY_PARTNER') navigate('/delivery');
       else navigate(redirect);
     }
   };
-
-  const demoAccounts = [
-    { label: 'Customer',         email: 'hardik@quickkart.com',  pass: 'password123', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-    { label: 'Admin',            email: 'admin@quickkart.com',   pass: 'admin123',    color: 'bg-purple-50 text-purple-700 border-purple-200' },
-    { label: 'Store Manager',    email: 'store@quickkart.com',   pass: 'store123',    color: 'bg-green-50 text-green-700 border-green-200' },
-    { label: 'Delivery Partner', email: 'delivery@quickkart.com',pass: 'delivery123', color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  ];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark-50 px-4 py-8">
@@ -61,23 +53,6 @@ export default function Login() {
             </div>
             <h1 className="text-2xl font-extrabold text-dark-900">Welcome back</h1>
             <p className="text-dark-400 text-sm mt-1">Login to your QuickKart account</p>
-          </div>
-
-          {/* Demo accounts */}
-          <div className="bg-dark-50 rounded-2xl p-3 mb-6">
-            <p className="text-xs font-semibold text-dark-500 mb-2 px-1">Demo Accounts (click to fill)</p>
-            <div className="grid grid-cols-2 gap-2">
-              {demoAccounts.map(acc => (
-                <button
-                  key={acc.label}
-                  type="button"
-                  onClick={() => setForm({ email: acc.email, password: acc.pass })}
-                  className={`text-xs font-medium px-3 py-2 rounded-xl border transition-all hover:shadow-sm ${acc.color}`}
-                >
-                  {acc.label}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Form */}
@@ -109,12 +84,15 @@ export default function Login() {
                     value={form.password}
                     onChange={e => setForm({ ...form, password: e.target.value })}
                     className={`input pl-10 pr-10 ${errors.password ? 'border-error focus:border-error focus:ring-error/20' : ''}`}
-                    placeholder="Enter your password"
+                    placeholder="Enter password"
                     id="login-password"
                     autoComplete="current-password"
                   />
-                  <button type="button" onClick={() => setShowPass(!showPass)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-300 hover:text-dark-600">
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(!showPass)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-300 hover:text-dark-600"
+                  >
                     {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -122,23 +100,20 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end mb-5">
-              <Link to="/forgot-password" className="text-xs text-brand-600 hover:text-brand-700 font-medium">Forgot password?</Link>
-            </div>
-
-            <button type="submit" disabled={loading} id="login-submit"
-              className="btn-primary w-full py-3.5 text-base mb-5 disabled:opacity-70 flex items-center justify-center gap-2">
+            <button
+              type="submit"
+              disabled={loading}
+              id="login-submit"
+              className="btn-primary w-full py-3.5 text-base mb-5 disabled:opacity-70 flex items-center justify-center gap-2"
+            >
               {loading ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-dark-900 border-t-transparent rounded-full animate-spin" />
-                  Logging in...
-                </>
-              ) : 'Login to QuickKart'}
+                <><span className="w-4 h-4 border-2 border-dark-900 border-t-transparent rounded-full animate-spin" /> Logging in...</>
+              ) : 'Login'}
             </button>
 
             <p className="text-center text-sm text-dark-500">
               Don't have an account?{' '}
-              <Link to="/register" className="text-brand-600 font-semibold hover:text-brand-700">Create Account</Link>
+              <Link to="/register" className="text-brand-600 font-semibold hover:text-brand-700">Register</Link>
             </p>
           </form>
         </div>

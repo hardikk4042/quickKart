@@ -1,8 +1,10 @@
 // src/pages/Account.jsx
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, MapPin, Package, Heart, CreditCard, Tag, Bell, Settings, LogOut, ChevronRight } from 'lucide-react';
+import { MapPin, Package, Heart, Tag, Bell, Settings, LogOut, ChevronRight } from 'lucide-react';
 import useAuthStore from '@store/authStore';
 import { useAuth } from '@hooks/useAuth';
+import { userAPI } from '@services/user.api';
 import { formatDate } from '@utils/format';
 import { mockUser } from '@data/notifications';
 
@@ -16,8 +18,14 @@ const MENU = [
 ];
 
 export default function Account() {
-  const { isLoggedIn, user } = useAuthStore();
+  const { isLoggedIn, user, updateUser } = useAuthStore();
   const { logout } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      userAPI.getMe().then(u => updateUser(u)).catch(() => {});
+    }
+  }, [isLoggedIn, updateUser]);
 
   const displayUser = isLoggedIn ? user : mockUser;
 
@@ -26,30 +34,36 @@ export default function Account() {
       <h1 className="text-2xl font-bold text-dark-900 mb-6">My Account</h1>
 
       {/* Profile card */}
-      <div className="bg-gradient-to-br from-dark-900 to-dark-800 rounded-3xl p-6 mb-6 text-white">
+      <div className="bg-gradient-to-br from-dark-900 to-dark-800 rounded-3xl p-6 mb-6 text-white shadow-card">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-brand-500 rounded-2xl flex items-center justify-center text-2xl font-extrabold text-dark-900 flex-shrink-0">
-            {displayUser?.name?.[0]?.toUpperCase() || '?'}
+            {displayUser?.avatarUrl ? (
+              <img src={displayUser.avatarUrl} alt={displayUser.name} className="w-full h-full object-cover rounded-2xl" />
+            ) : (
+              displayUser?.name?.[0]?.toUpperCase() || '?'
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="text-xl font-bold truncate">{displayUser?.name}</h2>
             <p className="text-dark-300 text-sm truncate">{displayUser?.email}</p>
-            <p className="text-dark-300 text-sm">{displayUser?.phone}</p>
+            <p className="text-dark-300 text-sm">{displayUser?.phone || 'No phone added'}</p>
           </div>
-          <Link to="/account/edit" className="flex-shrink-0 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-medium transition-colors">
-            Edit
-          </Link>
+          {isLoggedIn && (
+            <Link to="/account/edit" className="flex-shrink-0 px-3.5 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-semibold transition-colors">
+              Edit
+            </Link>
+          )}
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mt-5 pt-5 border-t border-white/10">
           {[
-            { label: 'Orders',      value: displayUser?.totalOrders || 12 },
-            { label: 'Total Spent', value: `₹${(displayUser?.totalSpent || 4280).toLocaleString()}` },
-            { label: 'Member since', value: formatDate(displayUser?.joinedAt) },
+            { label: 'Orders',      value: displayUser?.totalOrders || 0 },
+            { label: 'Role',        value: displayUser?.role || 'CUSTOMER' },
+            { label: 'Member since', value: formatDate(displayUser?.createdAt || displayUser?.joinedAt) },
           ].map(s => (
             <div key={s.label} className="text-center">
-              <p className="text-lg font-bold text-brand-400">{s.value}</p>
+              <p className="text-sm font-bold text-brand-400 truncate">{s.value}</p>
               <p className="text-xs text-dark-300">{s.label}</p>
             </div>
           ))}
@@ -64,7 +78,7 @@ export default function Account() {
       )}
 
       {/* Menu */}
-      <div className="bg-white rounded-3xl shadow-card overflow-hidden mb-4">
+      <div className="bg-white rounded-3xl shadow-card overflow-hidden mb-4 border border-dark-100">
         {MENU.map((item, i) => (
           <Link
             key={item.label}

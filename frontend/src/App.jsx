@@ -1,7 +1,7 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { Suspense, lazy, useState } from 'react';
+import { useState } from 'react';
 import SplashScreen from '@components/common/SplashScreen';
 
 // Layout
@@ -25,6 +25,8 @@ import Wishlist      from '@pages/Wishlist';
 import Login         from '@pages/Login';
 import Register      from '@pages/Register';
 import Account       from '@pages/Account';
+import EditProfilePage from '@pages/EditProfilePage';
+import AddressesPage from '@pages/AddressesPage';
 import Notifications from '@pages/Notifications';
 import ReviewPage    from '@pages/ReviewPage';
 import NotFound      from '@pages/NotFound';
@@ -34,6 +36,7 @@ import AdminLayout      from '@/admin/AdminLayout';
 import AdminDashboard   from '@/admin/AdminDashboard';
 import AdminProducts    from '@/admin/AdminProducts';
 import AdminOrders      from '@/admin/AdminOrders';
+import AdminStores      from '@/admin/AdminStores';
 import AdminPlaceholder from '@/admin/AdminPlaceholder';
 
 // Store Manager
@@ -42,15 +45,6 @@ import StoreDashboard from '@/storeManager/StoreDashboard';
 
 // Delivery
 import DeliveryDashboard from '@/delivery/DeliveryDashboard';
-
-// Loading fallback
-function PageLoader() {
-  return (
-    <div className="flex items-center justify-center min-h-[40vh]">
-      <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
-}
 
 // Layout wrapper for customer pages (with navbar + bottom nav)
 function CustomerLayout({ children }) {
@@ -80,6 +74,8 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/account" element={<CustomerLayout><Account /></CustomerLayout>} />
+      <Route path="/account/edit" element={<CustomerLayout><ProtectedRoute><EditProfilePage /></ProtectedRoute></CustomerLayout>} />
+      <Route path="/account/addresses" element={<CustomerLayout><ProtectedRoute><AddressesPage /></ProtectedRoute></CustomerLayout>} />
       <Route path="/notifications" element={<CustomerLayout><Notifications /></CustomerLayout>} />
       <Route path="/review/:orderId" element={<CustomerLayout><ReviewPage /></CustomerLayout>} />
 
@@ -109,7 +105,7 @@ function AppRoutes() {
         <Route path="users"      element={<AdminPlaceholder title="Users"         icon="👥" />} />
         <Route path="inventory"  element={<AdminPlaceholder title="Inventory"     icon="📦" />} />
         <Route path="coupons"    element={<AdminPlaceholder title="Coupons"       icon="🏷️" />} />
-        <Route path="stores"     element={<AdminPlaceholder title="Stores"        icon="🏪" />} />
+        <Route path="stores"     element={<AdminStores />} />
         <Route path="delivery"   element={<AdminPlaceholder title="Delivery Partners" icon="🛵" />} />
         <Route path="analytics"  element={<AdminPlaceholder title="Analytics"     icon="📊" />} />
         <Route path="settings"   element={<AdminPlaceholder title="Settings"      icon="⚙️" />} />
@@ -148,9 +144,7 @@ export default function App() {
             background: '#1A1A1A',
             color: '#fff',
             fontSize: '13px',
-            fontWeight: '500',
           },
-          success: { iconTheme: { primary: '#F6C90E', secondary: '#1A1A1A' } },
         }}
       />
     </BrowserRouter>

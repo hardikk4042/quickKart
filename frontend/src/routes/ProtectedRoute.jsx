@@ -10,7 +10,7 @@ export default function ProtectedRoute({ children, requiredRole }) {
     return <Navigate to={`/login?redirect=${location.pathname}`} replace />;
   }
 
-  if (requiredRole && user?.role !== requiredRole) {
+  if (requiredRole && user?.role?.toUpperCase() !== requiredRole.toUpperCase()) {
     return <Navigate to="/" replace />;
   }
 
