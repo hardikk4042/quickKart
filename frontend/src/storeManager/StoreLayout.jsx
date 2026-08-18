@@ -1,9 +1,14 @@
-// src/storeManager/StoreLayout.jsx
+/**
+ * @file StoreLayout.jsx
+ * @description Main layout component for the Store Manager dashboard interface.
+ * Provides sidebar navigation links, user profile details, and main outlet container.
+ */
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { LayoutDashboard, ShoppingBag, Package, Layers, Zap, LogOut, Truck, CheckSquare, Settings, Loader2, Store, Users, MapPin, PackageOpen } from 'lucide-react';
 import useAuthStore from '@store/authStore';
 import { storeService } from '@services/store.api';
+
 
 const NAV = [
   { to: '/store',          icon: LayoutDashboard, label: 'Dashboard' },
