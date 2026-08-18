@@ -1,0 +1,38 @@
+[
+  {
+    "id": "u1",
+    "name": "Hardik",
+    "email": "hardik@quickkart.com",
+    "password": "password123",
+    "role": "customer",
+    "avatar": "H",
+    "phone": "9876543210"
+  },
+  {
+    "id": "u2",
+    "name": "Admin User",
+    "email": "admin@quickkart.com",
+    "password": "admin123",
+    "role": "admin",
+    "avatar": "A",
+    "phone": "9000000001"
+  },
+  {
+    "id": "u3",
+    "name": "Store Manager",
+    "email": "store@quickkart.com",
+    "password": "store123",
+    "role": "store_manager",
+    "avatar": "S",
+    "phone": "9000000002"
+  },
+  {
+    "id": "u4",
+    "name": "Delivery Partner",
+    "email": "delivery@quickkart.com",
+    "password": "delivery123",
+    "role": "delivery_partner",
+    "avatar": "D",
+    "phone": "9000000003"
+  }
+]

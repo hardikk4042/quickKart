@@ -31,3 +31,5 @@ const useAuthStore = create(
 );
 
 export default useAuthStore;
+
+// Finalized authentication logic

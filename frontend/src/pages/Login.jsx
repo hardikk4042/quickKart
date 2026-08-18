@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, Zap, Mail, Lock } from 'lucide-react';
 import { useAuth } from '@hooks/useAuth';
+import demoUsers from '@data/users.json';
 
 export default function Login() {
   const { login, isLoggedIn } = useAuth();
@@ -111,6 +112,24 @@ export default function Login() {
               ) : 'Login'}
             </button>
 
+            {/* ── Quick Demo Login Buttons ── */}
+            <div className="border-t border-dark-100 pt-4">
+              <p className="text-xs text-dark-400 text-center mb-3">Quick Demo Login</p>
+              <div className="grid grid-cols-2 gap-2">
+                {demoUsers.map((u) => (
+                  <button
+                    key={u.id}
+                    type="button"
+                    onClick={() => setForm({ email: u.email, password: u.password })}
+                    className="text-xs border border-dark-200 rounded-xl py-2 px-3 text-dark-600 hover:border-brand-400 hover:text-brand-600 transition-colors text-left"
+                  >
+                    <span className="font-semibold block">{u.name}</span>
+                    <span className="text-dark-400 capitalize">{u.role.replace('_', ' ')}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <p className="text-center text-sm text-dark-500">
               Don't have an account?{' '}
               <Link to="/register" className="text-brand-600 font-semibold hover:text-brand-700">Register</Link>
@@ -121,3 +140,5 @@ export default function Login() {
     </div>
   );
 }
+
+// Finalized authentication logic

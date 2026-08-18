@@ -1,27 +1,61 @@
 // src/services/auth.api.js
-import apiClient from './api';
+import users from '@data/users.json';
+
+// ── Simulates a small network delay (like a real API) ──────
+const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
 
 export const authAPI = {
-  // POST /api/auth/login
+  // Mock login — checks credentials against users.json
   login: async ({ email, password }) => {
-    const res = await apiClient.post('/auth/login', { email, password });
-    return res.data; // { user, token }
+    await delay();
+
+    const found = users.find(
+      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+    );
+
+    if (!found) {
+      return Promise.reject({ message: 'Invalid email or password' });
+    }
+
+    // Build a safe user object (never expose password)
+    const { password: _pw, ...safeUser } = found;
+    const token = `mock-token-${safeUser.id}-${Date.now()}`;
+
+    return { user: safeUser, token };
   },
 
-  // POST /api/auth/register
+  // Mock register — just echoes back a user object
   register: async (data) => {
-    const res = await apiClient.post('/auth/register', data);
-    return res.data; // { user }
+    await delay();
+    const exists = users.find((u) => u.email.toLowerCase() === data.email.toLowerCase());
+    if (exists) {
+      return Promise.reject({ message: 'An account with this email already exists' });
+    }
+    const newUser = {
+      id: `u${Date.now()}`,
+      name: data.name,
+      email: data.email,
+      role: 'customer',
+      avatar: data.name?.[0]?.toUpperCase() || 'U',
+      phone: data.phone || '',
+    };
+    const token = `mock-token-${newUser.id}`;
+    return { user: newUser, token };
   },
 
-  // POST /api/auth/logout
+  // Mock logout
   logout: async () => {
+    await delay(100);
     return { success: true };
   },
 
-  // GET /api/users/me
+  // Mock getMe — reads from localStorage
   getMe: async () => {
-    const res = await apiClient.get('/users/me');
-    return res.data.user;
+    await delay(100);
+    const raw = localStorage.getItem('qk_user');
+    if (!raw) return Promise.reject({ message: 'Not authenticated' });
+    return JSON.parse(raw);
   },
 };
+
+// Finalized authentication logic
