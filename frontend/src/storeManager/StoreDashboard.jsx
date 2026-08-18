@@ -1,4 +1,8 @@
-// src/storeManager/StoreDashboard.jsx
+/**
+ * @file StoreDashboard.jsx
+ * @description Store Manager Overview Dashboard component.
+ * Displays assigned store info, order statistics, and incoming orders.
+ */
 import { useEffect, useState } from 'react';
 import { ShoppingBag, Clock, CheckCircle, AlertTriangle, Store, Navigation } from 'lucide-react';
 import { mockOrders } from '@data/orders';
@@ -7,12 +11,14 @@ import { statusColor, statusLabel, formatDate } from '@utils/format';
 import { storeService } from '@services/store.api';
 import toast from 'react-hot-toast';
 
+// ── Dashboard Metrics Summary Configuration ────────────────────
 const STAT = [
   { label: "Today's Orders",    value: 34,  icon: ShoppingBag,  color: 'bg-blue-50 text-blue-600' },
   { label: 'Pending Orders',    value: 8,   icon: Clock,        color: 'bg-amber-50 text-amber-600' },
   { label: 'Being Packed',      value: 4,   icon: ShoppingBag,  color: 'bg-purple-50 text-purple-600' },
   { label: 'Low Stock Products',value: 14,  icon: AlertTriangle,color: 'bg-red-50 text-red-600' },
 ];
+
 
 export default function StoreDashboard() {
   const [store, setStore] = useState(null);
