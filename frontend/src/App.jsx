@@ -7,6 +7,7 @@ import SplashScreen from '@components/common/SplashScreen';
 // Layout
 import Navbar from '@components/navbar/Navbar';
 import BottomNav from '@components/navbar/BottomNav';
+import Footer from '@components/common/Footer';
 import LocationPicker from '@components/common/LocationPicker';
 import ProtectedRoute from '@routes/ProtectedRoute';
 
@@ -50,7 +51,7 @@ import StoreInventory from '@/storeManager/StoreInventory';
 // Delivery
 import DeliveryDashboard from '@/delivery/DeliveryDashboard';
 
-// Layout wrapper for customer pages (with navbar + bottom nav)
+// Layout wrapper for customer pages (with navbar + bottom nav + footer)
 function CustomerLayout({ children }) {
   return (
     <>
@@ -58,6 +59,7 @@ function CustomerLayout({ children }) {
       <main className="min-h-screen bg-dark-50">
         {children}
       </main>
+      <Footer />
       <BottomNav />
       <LocationPicker />
     </>
