@@ -1,11 +1,18 @@
+/**
+ * @file StoreInventory.jsx
+ * @description Store Inventory management view for store managers.
+ * Handles loading store-specific stock items, pagination, search, and manual stock adjustments.
+ */
 import { useState, useEffect, useCallback } from 'react';
 import { Package, Search, Plus, Minus, FileEdit } from 'lucide-react';
+
 import { inventoryAPI } from '@services/inventory.api';
 import { storeService } from '@services/store.api';
 import useAuthStore from '@store/authStore';
 import toast from 'react-hot-toast';
 
 export default function StoreInventory() {
+
   const { user } = useAuthStore();
   const [storeId, setStoreId] = useState(null);
 
