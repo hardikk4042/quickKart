@@ -1,4 +1,6 @@
 // src/components/navbar/Navbar.jsx
+// Main public store navigation bar with location picker, search, and user actions
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, Heart, User, ChevronDown, Bell, Zap, LogOut, Settings, Package, Menu, X } from 'lucide-react';
@@ -11,14 +13,16 @@ import SearchBar from '@components/common/SearchBar';
 import { mockNotifications } from '@data/notifications';
 
 export default function Navbar() {
-  const itemCount      = useCartStore(s => s.items.reduce((a, i) => a + i.quantity, 0));
+  const itemCount      = useCartStore(s => s.items.reduce((acc, item) => acc + item.quantity, 0));
   const wishCount      = useWishlistStore(s => s.items.length);
   const { isLoggedIn, user } = useAuthStore();
-  const { selectedAddress } = useLocationStore();
+  const { selectedAddress }  = useLocationStore();
   const { setLocationPickerOpen } = useUiStore();
+
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [mobileOpen, setMobileOpen]   = useState(false);
-  const [scrolled, setScrolled]       = useState(false);
+  const [mobileOpen, setMobileOpen]     = useState(false);
+  const [scrolled, setScrolled]         = useState(false);
+
   const navigate = useNavigate();
   const loc      = useLocation();
   const unread   = mockNotifications.filter(n => !n.read).length;

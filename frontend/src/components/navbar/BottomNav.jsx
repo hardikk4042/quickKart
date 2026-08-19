@@ -1,4 +1,6 @@
 // src/components/navbar/BottomNav.jsx
+// Mobile sticky bottom navigation bar with active path highlights and cart badge count
+
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Grid3x3, ShoppingCart, Package, User } from 'lucide-react';
 import useCartStore from '@store/cartStore';
@@ -13,7 +15,7 @@ const tabs = [
 
 export default function BottomNav() {
   const { pathname } = useLocation();
-  const itemCount = useCartStore(s => s.items.reduce((a, i) => a + i.quantity, 0));
+  const itemCount = useCartStore(s => s.items.reduce((acc, item) => acc + item.quantity, 0));
 
   const isActive = (to) => {
     if (to === '/') return pathname === '/';

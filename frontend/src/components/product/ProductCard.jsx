@@ -1,4 +1,6 @@
 // src/components/product/ProductCard.jsx
+// Reusable product card component supporting image fallback, stock indicators, and cart/wishlist actions
+
 import { useState } from 'react';
 import { Plus, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -71,11 +73,13 @@ export default function ProductCard({ product }) {
           </div>
         )}
 
-        {/* Wishlist */}
+        {/* Wishlist button */}
         <button
           onClick={handleWishlist}
-          className="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm rounded-full 
-                     opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white"
+          aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
+          className={`absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm rounded-full 
+                     transition-all duration-200 hover:bg-white
+                     ${inWish ? 'opacity-100 shadow-sm' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100'}`}
         >
           <Heart
             size={14}
