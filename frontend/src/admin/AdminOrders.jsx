@@ -67,3 +67,5 @@ export default function AdminOrders() {
     </div>
   );
 }
+
+// Finalized admin panel components

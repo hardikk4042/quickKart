@@ -172,3 +172,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+// Finalized admin panel components

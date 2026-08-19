@@ -225,3 +225,5 @@ export default function AdminStores() {
     </div>
   );
 }
+
+// Finalized admin panel components

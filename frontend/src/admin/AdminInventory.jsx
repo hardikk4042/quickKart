@@ -273,3 +273,5 @@ export default function AdminInventory() {
     </div>
   );
 }
+
+// Finalized admin panel components

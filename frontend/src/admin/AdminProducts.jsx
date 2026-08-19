@@ -347,3 +347,5 @@ export default function AdminProducts() {
     </div>
   );
 }
+
+// Finalized admin panel components

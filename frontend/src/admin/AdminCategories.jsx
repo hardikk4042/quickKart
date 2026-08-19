@@ -241,3 +241,5 @@ export default function AdminCategories() {
     </div>
   );
 }
+
+// Finalized admin panel components

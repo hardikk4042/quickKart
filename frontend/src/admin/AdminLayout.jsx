@@ -122,3 +122,5 @@ export default function AdminLayout() {
     </div>
   );
 }
+
+// Finalized admin panel components
