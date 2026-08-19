@@ -12,15 +12,28 @@ import toast from 'react-hot-toast';
 import { productAPI, categoryAPI } from '@services/product.api';
 
 // ── Helpers ───────────────────────────────────────────────────
+/**
+ * Formats monetary amounts from paise to standard Rupee string display.
+ * @param {number} paise - Amount in paise (1 INR = 100 paise)
+ * @returns {string} Formatted currency string
+ */
 function formatPrice(paise) {
   return `₹${(paise / 100).toFixed(0)}`;
 }
 
 const EMPTY_FORM = {
-  name: '', description: '', price: '', originalPrice: '',
-  weight: '', unit: 'g', categoryId: '', tags: '', images: '',
+  name: '',
+  description: '',
+  price: '',
+  originalPrice: '',
+  weight: '',
+  unit: 'g',
+  categoryId: '',
+  tags: '',
+  images: '',
   isFeatured: false,
 };
+
 
 // ── ProductModal ──────────────────────────────────────────────
 function ProductModal({ product, categories, onClose, onSave }) {
