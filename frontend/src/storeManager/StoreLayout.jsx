@@ -10,11 +10,12 @@ import useAuthStore from '@store/authStore';
 import { storeService } from '@services/store.api';
 
 
+// Navigation sidebar items configuration
 const NAV = [
-  { to: '/store',          icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/store/orders',   icon: ShoppingBag,     label: 'Orders'    },
-  { to: '/store/products', icon: Package,         label: 'Products'  },
-  { to: '/store/inventory',icon: Layers,          label: 'Inventory' },
+  { to: '/store',           icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/store/orders',    icon: ShoppingBag,     label: 'Orders'    },
+  { to: '/store/products',  icon: Package,         label: 'Products'  },
+  { to: '/store/inventory', icon: Layers,          label: 'Inventory' },
 ];
 
 export default function StoreLayout() {
@@ -40,13 +41,20 @@ export default function StoreLayout() {
         </div>
         <nav className="flex-1 py-4 px-3 space-y-0.5">
           {NAV.map(({ to, icon: Icon, label }) => (
-            <Link key={to} to={to}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
-                          ${isActive(to) ? 'bg-brand-500 text-dark-900' : 'text-dark-500 hover:bg-dark-50 hover:text-dark-900'}`}>
+            <Link
+              key={to}
+              to={to}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                isActive(to)
+                  ? 'bg-brand-500 text-dark-900'
+                  : 'text-dark-500 hover:bg-dark-50 hover:text-dark-900'
+              }`}
+            >
               <Icon size={17} /> {label}
             </Link>
           ))}
         </nav>
+
         <div className="p-4 border-t border-dark-100">
           <p className="text-xs font-semibold text-dark-900 mb-0.5">{user?.name}</p>
           <p className="text-xs text-dark-400 mb-3">{user?.email}</p>
