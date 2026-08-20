@@ -13,12 +13,11 @@ import toast from 'react-hot-toast';
 
 // ── Dashboard Metrics Summary Configuration ────────────────────
 const STAT = [
-  { label: "Today's Orders",    value: 34,  icon: ShoppingBag,  color: 'bg-blue-50 text-blue-600' },
-  { label: 'Pending Orders',    value: 8,   icon: Clock,        color: 'bg-amber-50 text-amber-600' },
-  { label: 'Being Packed',      value: 4,   icon: ShoppingBag,  color: 'bg-purple-50 text-purple-600' },
-  { label: 'Low Stock Products',value: 14,  icon: AlertTriangle,color: 'bg-red-50 text-red-600' },
+  { label: "Today's Orders",     value: 34, icon: ShoppingBag,   color: 'bg-blue-50 text-blue-600' },
+  { label: 'Pending Orders',     value: 8,  icon: Clock,         color: 'bg-amber-50 text-amber-600' },
+  { label: 'Being Packed',       value: 4,  icon: ShoppingBag,   color: 'bg-purple-50 text-purple-600' },
+  { label: 'Low Stock Products', value: 14, icon: AlertTriangle, color: 'bg-red-50 text-red-600' },
 ];
-
 
 export default function StoreDashboard() {
   const [store, setStore] = useState(null);
@@ -30,6 +29,9 @@ export default function StoreDashboard() {
     fetchStore();
   }, []);
 
+  /**
+   * Fetches the assigned store information for the logged-in manager.
+   */
   const fetchStore = async () => {
     try {
       setLoading(true);
@@ -40,11 +42,13 @@ export default function StoreDashboard() {
         setStore(null);
       }
     } catch (err) {
+      // Notify user on network/fetch failure
       toast.error('Failed to load store information');
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="space-y-6">
