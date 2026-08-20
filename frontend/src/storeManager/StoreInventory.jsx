@@ -163,6 +163,7 @@ export default function StoreInventory() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
+                      {/* Inventory availability status badge */}
                       <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                         item.status === 'AVAILABLE' ? 'bg-green-100 text-green-700' :
                         item.status === 'LOW_STOCK' ? 'bg-orange-100 text-orange-700' :
