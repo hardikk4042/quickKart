@@ -1,4 +1,6 @@
-// src/pages/CategoryListPage.jsx  — /category route (all categories)
+// src/pages/CategoryListPage.jsx
+// Full category listing page for browsing all product categories and sub-sections
+
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { categoryAPI } from '@services/product.api';

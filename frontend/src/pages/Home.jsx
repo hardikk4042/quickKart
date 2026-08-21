@@ -1,9 +1,10 @@
 // src/pages/Home.jsx
+// Main store discovery landing page featuring location header, banner, categories, and curated sections
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
-import { productAPI } from '@services/product.api';
-import { categoryAPI } from '@services/product.api';
+import { productAPI, categoryAPI } from '@services/product.api';
 import CategoryCard from '@components/common/CategoryCard';
 import HeroBanner from '@components/common/HeroBanner';
 import ProductSection from '@components/product/ProductSection';
