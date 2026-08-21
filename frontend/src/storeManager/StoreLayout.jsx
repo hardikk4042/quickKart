@@ -55,10 +55,14 @@ export default function StoreLayout() {
           ))}
         </nav>
 
+        {/* User profile & actions footer */}
         <div className="p-4 border-t border-dark-100">
           <p className="text-xs font-semibold text-dark-900 mb-0.5">{user?.name}</p>
           <p className="text-xs text-dark-400 mb-3">{user?.email}</p>
-          <button onClick={logout} className="flex items-center gap-2 text-xs text-dark-400 hover:text-error transition-colors">
+          <button
+            onClick={logout}
+            className="flex items-center gap-2 text-xs text-dark-400 hover:text-error transition-colors"
+          >
             <LogOut size={14} /> Logout
           </button>
         </div>
