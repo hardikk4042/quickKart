@@ -1,4 +1,6 @@
 // src/pages/ProductDetails.jsx
+// Detailed product view with multi-image gallery, real-time stock alert, price details, and similar items
+
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Heart, Share2, Truck, Clock, ShieldCheck, Plus } from 'lucide-react';
@@ -61,8 +63,16 @@ export default function ProductDetails() {
   const cartItem = getItem(product.id);
   const inWish   = isInWishlist(product.id);
 
-  // Use same image but simulate gallery
-  const images = [product.image, product.image, product.image];
+  // Support product.images array if provided by API, otherwise fallback to product.image
+  const images = (product.images && product.images.length > 0)
+    ? product.images
+    : [product.image, product.image, product.image];
+
+  const categorySlug = typeof product.category === 'string'
+    ? product.category
+    : (product.category?.slug || '');
+
+  const categoryLabel = categorySlug ? categorySlug.replace(/-/g, ' ') : 'Category';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 pb-24 md:pb-8">
@@ -70,7 +80,7 @@ export default function ProductDetails() {
       <nav className="flex items-center gap-1.5 text-xs text-dark-400 mb-6" aria-label="Breadcrumb">
         <Link to="/" className="hover:text-dark-700">Home</Link>
         <ChevronRight size={12} />
-        <Link to={`/category/${product.category}`} className="hover:text-dark-700 capitalize">{product.category.replace('-', ' ')}</Link>
+        <Link to={`/category/${categorySlug}`} className="hover:text-dark-700 capitalize">{categoryLabel}</Link>
         <ChevronRight size={12} />
         <span className="text-dark-600 font-medium truncate max-w-[150px]">{product.name}</span>
       </nav>

@@ -1,5 +1,7 @@
 // src/pages/Search.jsx
-import { useEffect, useState, useCallback } from 'react';
+// Product search page with query processing, price range filters, stock filters, and sorting options
+
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal, X } from 'lucide-react';
 import { productAPI } from '@services/product.api';

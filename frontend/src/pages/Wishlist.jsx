@@ -1,4 +1,6 @@
 // src/pages/Wishlist.jsx
+// Saved wishlist items page with move-to-cart actions, stock checks, and removal support
+
 import { Link } from 'react-router-dom';
 import { Trash2, ShoppingCart } from 'lucide-react';
 import useWishlistStore from '@store/wishlistStore';
