@@ -141,7 +141,7 @@ function ProductModal({ product, categories, onClose, onSave }) {
             </select>
           </div>
 
-          {/* Price row */}
+          {/* Price & MRP Configuration */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-dark-700 mb-1">Price (₹) *</label>
