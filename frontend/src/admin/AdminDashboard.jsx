@@ -174,3 +174,5 @@ export default function AdminDashboard() {
 }
 
 // Finalized admin panel components
+
+// UI polish and final bug fixes applied

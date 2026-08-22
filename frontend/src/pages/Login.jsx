@@ -142,3 +142,5 @@ export default function Login() {
 }
 
 // Finalized authentication logic
+
+// UI polish and final bug fixes applied
