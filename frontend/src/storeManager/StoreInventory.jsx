@@ -66,6 +66,10 @@ export default function StoreInventory() {
     init();
   }, [loadInventory]);
 
+  /**
+   * Handles stock adjustment form submission.
+   * Validates quantity delta, calls adjustment API, and reloads inventory.
+   */
   const handleAdjustStock = async (e) => {
     e.preventDefault();
     if (!selectedItem) return;
