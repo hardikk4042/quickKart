@@ -22,6 +22,8 @@ const adminRoutes        = require('./modules/admin/admin.routes');
 const storesRoutes       = require('./modules/stores/stores.routes');
 const storeManagerRoutes = require('./modules/storeManager/storeManager.routes');
 const deliveryRoutes     = require('./modules/delivery/delivery.routes');
+const categoriesRoutes   = require('./modules/categories/category.routes');
+const productsRoutes     = require('./modules/products/product.routes');
 
 const app = express();
 
@@ -49,13 +51,15 @@ app.get('/health', (_req, res) => {
 });
 
 // ── API routes ───────────────────────────────────────────────
-app.use('/api/auth',      authRoutes);
-app.use('/api/users',     usersRoutes);
-app.use('/api/addresses', addressesRoutes);
-app.use('/api/admin',     adminRoutes);
-app.use('/api/stores',    storesRoutes);
-app.use('/api/store',     storeManagerRoutes);
-app.use('/api/delivery',  deliveryRoutes);
+app.use('/api/auth',       authRoutes);
+app.use('/api/users',      usersRoutes);
+app.use('/api/addresses',  addressesRoutes);
+app.use('/api/admin',      adminRoutes);
+app.use('/api/stores',     storesRoutes);
+app.use('/api/store',      storeManagerRoutes);
+app.use('/api/delivery',   deliveryRoutes);
+app.use('/api/categories', categoriesRoutes);
+app.use('/api/products',   productsRoutes);
 
 // ── 404 for unknown routes ───────────────────────────────────
 app.use((_req, res) => {

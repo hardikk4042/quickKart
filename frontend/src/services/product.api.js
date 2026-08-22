@@ -1,77 +1,177 @@
 // src/services/product.api.js
+//
+// Real API integration — MOCK mode removed.
+// All prices from the API are in paise (e.g. ₹68 = 6800 paise).
+// normalizeProduct() converts to the shape the UI components expect.
+
 import apiClient from './api';
-import { products, getByCategory, getTrending, getBestSellers, getTopDeals, getFreshPicks } from '@data/products';
 
-const MOCK = true;
-const delay = (ms = 500) => new Promise(r => setTimeout(r, ms));
+// ── Normalizer: API shape → UI shape ─────────────────────────
+// Keeps UI components working without modification.
+export function normalizeProduct(p) {
+  if (!p) return p;
+  return {
+    ...p,
+    // Prices: paise → rupees
+    price:         Math.round(p.price / 100),
+    originalPrice: p.originalPrice ? Math.round(p.originalPrice / 100) : null,
+    // Discount percentage field rename
+    discount: p.discountPct ?? 0,
+    // Images: first image → `image` (for ProductCard compat), keep `images` array
+    image: p.images?.[0] || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80',
+    // Rating
+    rating: p.avgRating ?? 0,
+    reviewCount: p.reviewCount ?? 0,
+    // Stock status — isActive covers catalog availability; inventory phase adds real stock
+    inStock: p.isActive !== false,
+    // Keep category slug for routing
+    category: p.category?.slug || p.categoryId || '',
+    categoryName: p.category?.name || '',
+    brand: p.brand?.name || p.brandId || '',
+  };
+}
 
+// ── Category API ─────────────────────────────────────────────
+export const categoryAPI = {
+  // GET /api/categories
+  getCategories: async () => {
+    const res = await apiClient.get('/categories');
+    return res.data?.categories ?? [];
+  },
+
+  // GET /api/categories/:id
+  getCategoryById: async (id) => {
+    const res = await apiClient.get(`/categories/${id}`);
+    return res.data?.category ?? null;
+  },
+
+  // GET /api/categories/slug/:slug
+  getCategoryBySlug: async (slug) => {
+    const res = await apiClient.get(`/categories/slug/${slug}`);
+    return res.data?.category ?? null;
+  },
+
+  // POST /api/categories  (ADMIN only)
+  createCategory: async (data) => {
+    const res = await apiClient.post('/categories', data);
+    return res.data?.category;
+  },
+
+  // PATCH /api/categories/:id  (ADMIN only)
+  updateCategory: async (id, data) => {
+    const res = await apiClient.patch(`/categories/${id}`, data);
+    return res.data?.category;
+  },
+
+  // PATCH /api/categories/:id/status  (ADMIN only)
+  setCategoryStatus: async (id, isActive) => {
+    const res = await apiClient.patch(`/categories/${id}/status`, { isActive });
+    return res.data?.category;
+  },
+};
+
+// ── Product API ───────────────────────────────────────────────
 export const productAPI = {
   // GET /api/products
   getProducts: async (params = {}) => {
-    if (MOCK) {
-      await delay(400);
-      let list = [...products];
-      if (params.category) list = list.filter(p => p.category === params.category);
-      if (params.inStock)   list = list.filter(p => p.inStock);
-      if (params.minPrice)  list = list.filter(p => p.price >= params.minPrice);
-      if (params.maxPrice)  list = list.filter(p => p.price <= params.maxPrice);
-      if (params.sort === 'price_asc')  list.sort((a, b) => a.price - b.price);
-      if (params.sort === 'price_desc') list.sort((a, b) => b.price - a.price);
-      if (params.sort === 'rating')     list.sort((a, b) => b.rating - a.rating);
-      if (params.sort === 'discount')   list.sort((a, b) => b.discount - a.discount);
-      const page  = params.page  || 1;
-      const limit = params.limit || 20;
-      const total = list.length;
-      const paginated = list.slice((page - 1) * limit, page * limit);
-      return { products: paginated, total, page, totalPages: Math.ceil(total / limit) };
-    }
-    return apiClient.get('/products', { params });
+    const res = await apiClient.get('/products', { params });
+    const raw = res.data ?? res;
+    const products = (raw.products ?? []).map(normalizeProduct);
+    return {
+      products,
+      total:      raw.pagination?.total ?? products.length,
+      page:       raw.pagination?.page  ?? 1,
+      totalPages: raw.pagination?.totalPages ?? 1,
+      pagination: raw.pagination,
+    };
   },
 
   // GET /api/products/:id
   getProduct: async (id) => {
-    if (MOCK) {
-      await delay(300);
-      const product = products.find(p => p.id === Number(id));
-      if (!product) throw { message: 'Product not found' };
-      return product;
-    }
-    return apiClient.get(`/products/${id}`);
+    const res = await apiClient.get(`/products/${id}`);
+    const raw = res.data ?? res;
+    return normalizeProduct(raw.product);
+  },
+
+  // GET /api/products/slug/:slug
+  getProductBySlug: async (slug) => {
+    const res = await apiClient.get(`/products/slug/${slug}`);
+    const raw = res.data ?? res;
+    return normalizeProduct(raw.product);
   },
 
   // GET /api/products/search?q=
   search: async (query, params = {}) => {
-    if (MOCK) {
-      await delay(400);
-      const q = query.toLowerCase();
-      let list = products.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.brand.toLowerCase().includes(q) ||
-        p.tags.some(t => t.includes(q))
-      );
-      if (params.sort === 'price_asc')  list.sort((a, b) => a.price - b.price);
-      if (params.sort === 'price_desc') list.sort((a, b) => b.price - a.price);
-      if (params.sort === 'rating')     list.sort((a, b) => b.rating - a.rating);
-      return { products: list, total: list.length, query };
-    }
-    return apiClient.get('/products/search', { params: { q: query, ...params } });
+    const res = await apiClient.get('/products/search', {
+      params: { q: query, ...params },
+    });
+    const raw = res.data ?? res;
+    const products = (raw.products ?? []).map(normalizeProduct);
+    return {
+      products,
+      total:    raw.pagination?.total ?? products.length,
+      query:    raw.query ?? query,
+      pagination: raw.pagination,
+    };
   },
-
-  // Curated sections
-  getTrending:    async () => { await delay(300); return getTrending(); },
-  getBestSellers: async () => { await delay(300); return getBestSellers(); },
-  getTopDeals:    async () => { await delay(300); return getTopDeals(); },
-  getFreshPicks:  async () => { await delay(300); return getFreshPicks(); },
-  getByCategory:  async (slug) => { await delay(400); return getByCategory(slug); },
 
   // GET /api/products/:id/similar
   getSimilar: async (id) => {
-    if (MOCK) {
-      await delay(300);
-      const product = products.find(p => p.id === Number(id));
-      if (!product) return [];
-      return products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 6);
-    }
-    return apiClient.get(`/products/${id}/similar`);
+    const res = await apiClient.get(`/products/${id}/similar`);
+    const raw = res.data ?? res;
+    return (raw.products ?? []).map(normalizeProduct);
+  },
+
+  // ── Curated sections — map to real API filters ────────────
+  // Featured products
+  getFeatured: async () => {
+    const res = await productAPI.getProducts({ isFeatured: 'true', limit: 10 });
+    return res.products;
+  },
+
+  // Trending = sorted by review count (popularity proxy)
+  getTrending: async () => {
+    const res = await productAPI.getProducts({ sort: 'popular', limit: 10 });
+    return res.products;
+  },
+
+  // Best sellers = highest avg rating
+  getBestSellers: async () => {
+    const res = await productAPI.getProducts({ sort: 'rating', limit: 10 });
+    return res.products;
+  },
+
+  // Top deals = highest discount %
+  getTopDeals: async () => {
+    const res = await productAPI.getProducts({ sort: 'discount', limit: 10 });
+    return res.products;
+  },
+
+  // Fresh picks = newest products
+  getFreshPicks: async () => {
+    const res = await productAPI.getProducts({ sort: 'newest', limit: 10 });
+    return res.products;
+  },
+
+  // By category slug
+  getByCategory: async (categorySlug) => {
+    const res = await productAPI.getProducts({ categorySlug, limit: 50 });
+    return res.products;
+  },
+
+  // ── Write operations (ADMIN / STORE_MANAGER) ──────────────
+  createProduct: async (data) => {
+    const res = await apiClient.post('/products', data);
+    return normalizeProduct((res.data ?? res).product);
+  },
+
+  updateProduct: async (id, data) => {
+    const res = await apiClient.patch(`/products/${id}`, data);
+    return normalizeProduct((res.data ?? res).product);
+  },
+
+  setProductStatus: async (id, isActive) => {
+    const res = await apiClient.patch(`/products/${id}/status`, { isActive });
+    return normalizeProduct((res.data ?? res).product);
   },
 };

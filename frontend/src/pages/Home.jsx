@@ -3,16 +3,59 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { productAPI } from '@services/product.api';
-import { categories } from '@data/categories';
+import { categoryAPI } from '@services/product.api';
 import CategoryCard from '@components/common/CategoryCard';
 import HeroBanner from '@components/common/HeroBanner';
 import ProductSection from '@components/product/ProductSection';
 import useLocationStore from '@store/locationStore';
 import useUiStore from '@store/uiStore';
 
+// Fallback category appearance when the DB category doesn't have colour/icon metadata
+// (the schema only stores imageUrl, not emoji icon / bg colour)
+const CATEGORY_STYLE_FALLBACKS = {
+  // ── Existing categories ────────────────────────────────────
+  'fruits-vegetables':       { icon: '🥦', bg: '#DCFCE7' },
+  'dairy-breakfast':         { icon: '🥛', bg: '#DBEAFE' },
+  'snacks':                  { icon: '🍿', bg: '#FEF3C7' },
+  'beverages':               { icon: '🧃', bg: '#EDE9FE' },
+  'instant-food':            { icon: '🍜', bg: '#FEE2E2' },
+  'personal-care':           { icon: '🧴', bg: '#FCE7F3' },
+  'household':               { icon: '🧹', bg: '#CFFAFE' },
+  'bakery':                  { icon: '🍞', bg: '#FEF3C7' },
+  'stationery':              { icon: '📝', bg: '#E0E7FF' },
+  'electronics':             { icon: '🔌', bg: '#F3F4F6' },
+  // ── New Phase 5 categories ─────────────────────────────────
+  'atta-rice-dals':          { icon: '🌾', bg: '#FEF9C3' },
+  'oil-ghee-masala':         { icon: '🫙', bg: '#FEF3C7' },
+  'biscuits-cookies':        { icon: '🍪', bg: '#FEF3C7' },
+  'chocolates-sweets':       { icon: '🍫', bg: '#FDE8FF' },
+  'breakfast-sauces':        { icon: '🥣', bg: '#F0FDF4' },
+  'packaged-food':           { icon: '📦', bg: '#F1F5F9' },
+  'tea-coffee':              { icon: '☕', bg: '#FEF3C7' },
+  'ice-cream-frozen':        { icon: '🍦', bg: '#EDE9FE' },
+  'meat-seafood':            { icon: '🍗', bg: '#FEE2E2' },
+  'baby-care':               { icon: '👶', bg: '#FEF9C3' },
+  'home-kitchen':            { icon: '🏠', bg: '#F0FDF4' },
+  'pet-care':                { icon: '🐾', bg: '#FEF3C7' },
+  'pooja-festive':           { icon: '🪔', bg: '#FEF9C3' },
+  'adult-personal-wellness': { icon: '💊', bg: '#F1F5F9' },
+  'other-essentials':        { icon: '🛡️', bg: '#F3F4F6' },
+};
+
+function enrichCategory(cat) {
+  const fallback = CATEGORY_STYLE_FALLBACKS[cat.slug] || { icon: '🛍️', bg: '#F3F4F6' };
+  return {
+    ...cat,
+    icon:  fallback.icon,
+    bg:    fallback.bg,
+    count: cat._count?.products ?? 0,
+  };
+}
+
 export default function Home() {
   const { selectedAddress } = useLocationStore();
   const { setLocationPickerOpen } = useUiStore();
+  const [categories, setCategories] = useState([]);
   const [sections, setSections] = useState({ trending: [], bestSellers: [], deals: [], fresh: [] });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -21,15 +64,17 @@ export default function Home() {
     document.title = 'QuickKart — Everything you need. Delivered fast.';
     (async () => {
       try {
-        const [trending, bestSellers, deals, fresh] = await Promise.all([
+        const [cats, trending, bestSellers, deals, fresh] = await Promise.all([
+          categoryAPI.getCategories(),
           productAPI.getTrending(),
           productAPI.getBestSellers(),
           productAPI.getTopDeals(),
           productAPI.getFreshPicks(),
         ]);
+        setCategories(cats.map(enrichCategory));
         setSections({ trending, bestSellers, deals, fresh });
       } catch (e) {
-        console.error(e);
+        console.error('Home data load error:', e);
       } finally {
         setLoading(false);
       }
@@ -70,9 +115,20 @@ export default function Home() {
             All categories →
           </button>
         </div>
-        <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-4">
-          {categories.map(cat => <CategoryCard key={cat.id} category={cat} />)}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-4">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <div className="w-12 h-12 rounded-2xl bg-dark-100 animate-pulse" />
+                <div className="h-3 w-16 bg-dark-100 animate-pulse rounded" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-4">
+            {categories.slice(0, 10).map(cat => <CategoryCard key={cat.id} category={cat} />)}
+          </div>
+        )}
       </section>
 
       {/* Promo strip */}

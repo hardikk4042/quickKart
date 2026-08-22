@@ -37,11 +37,13 @@ import AdminDashboard   from '@/admin/AdminDashboard';
 import AdminProducts    from '@/admin/AdminProducts';
 import AdminOrders      from '@/admin/AdminOrders';
 import AdminStores      from '@/admin/AdminStores';
+import AdminCategories  from '@/admin/AdminCategories';
 import AdminPlaceholder from '@/admin/AdminPlaceholder';
 
 // Store Manager
 import StoreLayout    from '@/storeManager/StoreLayout';
 import StoreDashboard from '@/storeManager/StoreDashboard';
+import StoreProducts  from '@/storeManager/StoreProducts';
 
 // Delivery
 import DeliveryDashboard from '@/delivery/DeliveryDashboard';
@@ -101,7 +103,7 @@ function AppRoutes() {
         <Route index element={<AdminDashboard />} />
         <Route path="products"   element={<AdminProducts />} />
         <Route path="orders"     element={<AdminOrders />} />
-        <Route path="categories" element={<AdminPlaceholder title="Categories"    icon="📁" />} />
+        <Route path="categories" element={<AdminCategories />} />
         <Route path="users"      element={<AdminPlaceholder title="Users"         icon="👥" />} />
         <Route path="inventory"  element={<AdminPlaceholder title="Inventory"     icon="📦" />} />
         <Route path="coupons"    element={<AdminPlaceholder title="Coupons"       icon="🏷️" />} />
@@ -111,10 +113,11 @@ function AppRoutes() {
         <Route path="settings"   element={<AdminPlaceholder title="Settings"      icon="⚙️" />} />
       </Route>
 
-      {/* ── Store Manager Routes ──────────────────────── */}
+      {/* ── Store Manager Routes ────────────────────── */}
       <Route path="/store" element={<ProtectedRoute requiredRole="store_manager"><StoreLayout /></ProtectedRoute>}>
         <Route index element={<StoreDashboard />} />
         <Route path="orders"    element={<AdminPlaceholder title="Store Orders"    icon="📋" />} />
+        <Route path="products"  element={<StoreProducts />} />
         <Route path="inventory" element={<AdminPlaceholder title="Store Inventory" icon="📦" />} />
       </Route>
 
