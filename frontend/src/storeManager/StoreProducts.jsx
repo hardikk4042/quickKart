@@ -409,15 +409,19 @@ export default function StoreProducts() {
                     {/* Actions */}
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => setModal(product)}
+                        <button
+                          onClick={() => setModal(product)}
                           title="Edit product"
-                          className="p-1.5 rounded-lg hover:bg-dark-100 transition-colors text-dark-400 hover:text-dark-700">
+                          className="p-1.5 rounded-lg hover:bg-dark-100 transition-colors text-dark-400 hover:text-dark-700"
+                        >
                           <Edit2 size={14} />
                         </button>
-                        <button onClick={() => toggleStatus(product)}
+                        <button
+                          onClick={() => toggleStatus(product)}
                           disabled={toggling === product.id}
                           title={product.isActive ? 'Deactivate' : 'Activate'}
-                          className="p-1.5 rounded-lg hover:bg-dark-100 transition-colors text-dark-400 hover:text-dark-700 disabled:opacity-40">
+                          className="p-1.5 rounded-lg hover:bg-dark-100 transition-colors text-dark-400 hover:text-dark-700 disabled:opacity-40"
+                        >
                           {toggling === product.id
                             ? <Loader2 size={14} className="animate-spin" />
                             : product.isActive
