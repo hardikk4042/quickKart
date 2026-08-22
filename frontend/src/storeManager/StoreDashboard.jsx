@@ -116,6 +116,7 @@ export default function StoreDashboard() {
         </div>
       </div>
 
+      {/* Interactive Location Picker Modal (Read-Only Mode) */}
       {showMap && (
         <LocationPickerModal
           isOpen={showMap}
