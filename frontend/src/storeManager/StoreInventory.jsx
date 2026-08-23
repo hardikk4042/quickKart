@@ -197,7 +197,7 @@ export default function StoreInventory() {
           </table>
         </div>
         
-        {/* Pagination */}
+        {/* Pagination controls for multi-page inventory lists */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t bg-dark-50">
             <button
