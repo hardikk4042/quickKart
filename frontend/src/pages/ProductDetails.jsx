@@ -88,6 +88,11 @@ export default function ProductDetails() {
                 <span className="badge-out text-base font-bold px-4 py-2">Out of Stock</span>
               </div>
             )}
+            {product.inStock && product.stockStatus === 'Low Stock' && (
+              <div className="absolute bottom-4 left-4 flex items-center justify-center">
+                <span className="bg-orange-100 text-orange-700 border border-orange-200 rounded-lg text-sm font-bold px-3 py-1">Low Stock</span>
+              </div>
+            )}
           </div>
           <div className="flex gap-2">
             {images.map((img, i) => (

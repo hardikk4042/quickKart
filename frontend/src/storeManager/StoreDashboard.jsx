@@ -1,7 +1,8 @@
 // src/storeManager/StoreDashboard.jsx
 import { useEffect, useState } from 'react';
-import { ShoppingBag, Clock, CheckCircle, AlertTriangle, Store, Edit2 } from 'lucide-react';
+import { ShoppingBag, Clock, CheckCircle, AlertTriangle, Store, Navigation } from 'lucide-react';
 import { mockOrders } from '@data/orders';
+import LocationPickerModal from '@components/maps/LocationPickerModal';
 import { statusColor, statusLabel, formatDate } from '@utils/format';
 import { storeService } from '@services/store.api';
 import toast from 'react-hot-toast';
@@ -16,10 +17,7 @@ const STAT = [
 export default function StoreDashboard() {
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showEdit, setShowEdit] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '', addressLine: '', city: '', state: '', pincode: '', latitude: 0, longitude: 0
-  });
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     document.title = 'Store Dashboard — QuickKart';
@@ -42,31 +40,6 @@ export default function StoreDashboard() {
     }
   };
 
-  const openEdit = () => {
-    setFormData({
-      name: store.name,
-      addressLine: store.addressLine,
-      city: store.city,
-      state: store.state,
-      pincode: store.pincode,
-      latitude: store.latitude,
-      longitude: store.longitude
-    });
-    setShowEdit(true);
-  };
-
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      await storeService.updateStore(store.id, formData);
-      toast.success('Store updated successfully');
-      setShowEdit(false);
-      fetchStore();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Error updating store');
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-end">
@@ -86,8 +59,11 @@ export default function StoreDashboard() {
               <p className="text-sm text-dark-500">{store.addressLine}, {store.city}, {store.state} - {store.pincode}</p>
             </div>
           </div>
-          <button onClick={openEdit} className="btn-secondary flex items-center gap-2">
-            <Edit2 size={16} /> Edit Details
+          <button
+            onClick={() => setShowMap(true)}
+            className="btn-secondary flex items-center gap-2 text-brand-700 hover:text-brand-800"
+          >
+            <Navigation size={16} /> View Location
           </button>
         </div>
       ) : (
@@ -130,51 +106,13 @@ export default function StoreDashboard() {
         </div>
       </div>
 
-      {showEdit && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div className="px-6 py-4 border-b border-dark-100 flex justify-between items-center bg-dark-50">
-              <h2 className="font-bold text-lg text-dark-900">Edit Store Details</h2>
-              <button onClick={() => setShowEdit(false)} className="text-dark-400 hover:text-dark-900 text-2xl leading-none">&times;</button>
-            </div>
-            <form onSubmit={handleUpdate} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="block text-xs font-semibold text-dark-700 mb-1">Store Name</label>
-                  <input required className="input" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-xs font-semibold text-dark-700 mb-1">Address Line</label>
-                  <input required className="input" value={formData.addressLine} onChange={e => setFormData({...formData, addressLine: e.target.value})} />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-dark-700 mb-1">City</label>
-                  <input required className="input" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-dark-700 mb-1">State</label>
-                  <input required className="input" value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-dark-700 mb-1">Pincode</label>
-                  <input required className="input" value={formData.pincode} onChange={e => setFormData({...formData, pincode: e.target.value})} />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-dark-700 mb-1">Latitude</label>
-                  <input required type="number" step="any" className="input" value={formData.latitude} onChange={e => setFormData({...formData, latitude: parseFloat(e.target.value)})} />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-dark-700 mb-1">Longitude</label>
-                  <input required type="number" step="any" className="input" value={formData.longitude} onChange={e => setFormData({...formData, longitude: parseFloat(e.target.value)})} />
-                </div>
-              </div>
-              <div className="pt-4 flex justify-end gap-3 border-t border-dark-100 mt-6">
-                <button type="button" onClick={() => setShowEdit(false)} className="btn-secondary">Cancel</button>
-                <button type="submit" className="btn-primary">Save Changes</button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {showMap && (
+        <LocationPickerModal
+          isOpen={showMap}
+          onClose={() => setShowMap(false)}
+          readOnly={true}
+          initialValues={{ latitude: store?.latitude, longitude: store?.longitude }}
+        />
       )}
     </div>
   );

@@ -24,6 +24,7 @@ const storeManagerRoutes = require('./modules/storeManager/storeManager.routes')
 const deliveryRoutes     = require('./modules/delivery/delivery.routes');
 const categoriesRoutes   = require('./modules/categories/category.routes');
 const productsRoutes     = require('./modules/products/product.routes');
+const inventoryRoutes    = require('./modules/inventory/inventory.routes');
 
 const app = express();
 
@@ -60,6 +61,7 @@ app.use('/api/store',      storeManagerRoutes);
 app.use('/api/delivery',   deliveryRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/products',   productsRoutes);
+app.use('/api/inventory',  inventoryRoutes);
 
 // ── 404 for unknown routes ───────────────────────────────────
 app.use((_req, res) => {

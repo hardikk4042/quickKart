@@ -65,6 +65,11 @@ export default function ProductCard({ product }) {
             <span className="badge-out text-xs font-semibold px-3 py-1">Out of Stock</span>
           </div>
         )}
+        {product.inStock && product.stockStatus === 'Low Stock' && (
+          <div className="absolute bottom-2 left-2 flex items-center justify-center">
+            <span className="bg-orange-100 text-orange-700 border border-orange-200 rounded-lg text-[10px] font-bold px-2 py-0.5">Low Stock</span>
+          </div>
+        )}
 
         {/* Wishlist */}
         <button

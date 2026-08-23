@@ -15,12 +15,13 @@ const { z } = require('zod');
 const AppError = require('../utils/errors');
 
 /**
- * @param {z.ZodSchema} schema  - Zod schema to validate req.body against
+ * @param {z.ZodSchema} schema  - Zod schema to validate against
+ * @param {string} source - 'body' | 'query' | 'params'
  * @returns {import('express').RequestHandler}
  */
-function validate(schema) {
+function validate(schema, source = 'body') {
   return (req, _res, next) => {
-    const result = schema.safeParse(req.body);
+    const result = schema.safeParse(req[source]);
 
     if (!result.success) {
       const details = result.error.issues.map((issue) => ({
@@ -30,8 +31,8 @@ function validate(schema) {
       return next(AppError.badRequest('Validation failed', details));
     }
 
-    // Replace req.body with the parsed/coerced Zod output (strips unknown keys)
-    req.body = result.data;
+    // Replace the source with the parsed/coerced Zod output (strips unknown keys)
+    req[source] = result.data;
     return next();
   };
 }

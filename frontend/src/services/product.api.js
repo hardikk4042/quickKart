@@ -10,6 +10,27 @@ import apiClient from './api';
 // Keeps UI components working without modification.
 export function normalizeProduct(p) {
   if (!p) return p;
+
+  // Calculate inventory status from the new backend inventory inclusion
+  let availableStock = 0;
+  let totalThreshold = 0;
+  
+  if (p.inventory && p.inventory.length > 0) {
+    // CRITICAL FIX: Do NOT sum inventory across stores!
+    // Since we don't have a customer store selector yet, we just take the first store's
+    // inventory to reflect realistic single-store availability instead of a global sum.
+    const inv = p.inventory[0];
+    availableStock = Math.max(0, inv.quantityOnHand - inv.quantityReserved);
+    totalThreshold = inv.lowStockThreshold || 5;
+  } else {
+    // Fallback if inventory relation isn't returned for some reason
+    availableStock = p.isActive ? 99 : 0;
+  }
+
+  let stockStatus = 'Available';
+  if (availableStock === 0) stockStatus = 'Out of Stock';
+  else if (availableStock <= totalThreshold) stockStatus = 'Low Stock';
+
   return {
     ...p,
     // Prices: paise → rupees
@@ -22,8 +43,10 @@ export function normalizeProduct(p) {
     // Rating
     rating: p.avgRating ?? 0,
     reviewCount: p.reviewCount ?? 0,
-    // Stock status — isActive covers catalog availability; inventory phase adds real stock
-    inStock: p.isActive !== false,
+    // Stock status
+    inStock: stockStatus !== 'Out of Stock' && p.isActive !== false,
+    stockStatus,
+    availableStock,
     // Keep category slug for routing
     category: p.category?.slug || p.categoryId || '',
     categoryName: p.category?.name || '',

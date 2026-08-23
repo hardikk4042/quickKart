@@ -9,7 +9,7 @@ const INDIA_ZOOM = 5;
 
 const libraries = [];
 
-export default function GoogleMapPicker({ initialLat, initialLng, initialAddress, onConfirm, onClose, autoLocate }) {
+export default function GoogleMapPicker({ initialLat, initialLng, initialAddress, onConfirm, onClose, autoLocate, skipDetailsForm, readOnly }) {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
     libraries,
@@ -383,8 +383,14 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-dark-100 bg-white flex-shrink-0">
         <div>
-          <h2 className="text-base font-bold text-dark-900">Select Delivery Location</h2>
-          <p className="text-xs text-dark-400">Move the map to pin your exact delivery point</p>
+          <h2 className="text-base font-bold text-dark-900">
+            {readOnly ? 'Store Location' : skipDetailsForm ? 'Select Store Location' : 'Select Delivery Location'}
+          </h2>
+          {!readOnly && (
+            <p className="text-xs text-dark-400">
+              Move the map to pin your exact {skipDetailsForm ? 'store' : 'delivery'} point
+            </p>
+          )}
         </div>
         <button onClick={onClose} className="p-2 hover:bg-dark-50 rounded-xl text-dark-500 transition-colors">
           <X size={20} />
@@ -392,8 +398,9 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
       </div>
 
       {/* ── Search bar ───────────────────────────────────────────────────── */}
-      <div className="px-4 py-3 bg-white border-b border-dark-50 flex-shrink-0 relative z-[1000]">
-        <form onSubmit={handleSearchSubmit} className="relative">
+      {!readOnly && (
+        <div className="px-4 py-3 bg-white border-b border-dark-50 flex-shrink-0 relative z-[1000]">
+          <form onSubmit={handleSearchSubmit} className="relative">
           <Search
             size={16}
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-dark-400 pointer-events-none"
@@ -418,6 +425,7 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
           )}
         </form>
       </div>
+      )}
 
       {/* ── Map + fixed centered pin ─────────────────────────────────────── */}
       <div className="relative flex-1 min-h-0" style={{ minHeight: 300 }}>
@@ -432,6 +440,7 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
           options={{
             disableDefaultUI: true,
             zoomControl: true,
+            gestureHandling: readOnly ? 'none' : 'auto'
           }}
         />
 
@@ -488,8 +497,9 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
         </div>
 
         {/* GPS button (bottom-right of map) */}
-        <button
-          onClick={handleUseCurrentLocation}
+        {!readOnly && (
+          <button
+            onClick={handleUseCurrentLocation}
           disabled={locating}
           title="Use my current location"
           className="absolute bottom-4 right-4 z-[900] w-12 h-12 bg-white rounded-2xl shadow-card-hover
@@ -501,11 +511,13 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
             : <Navigation size={18} className="text-brand-700" />
           }
         </button>
+        )}
       </div>
 
       {/* ── Bottom panel — detected address + confirm ─────────────────────── */}
-      <div className="bg-white border-t border-dark-100 flex-shrink-0 px-4 pt-3 pb-4">
-        {locationError && (
+      {!readOnly && (
+        <div className="bg-white border-t border-dark-100 flex-shrink-0 px-4 pt-3 pb-4">
+          {locationError && (
           <div className="flex items-start gap-2 text-xs text-error mb-2 bg-error/5 px-3 py-2 rounded-xl border border-error/20">
             <AlertCircle size={13} className="mt-0.5 flex-shrink-0" />
             <span>{locationError}</span>
@@ -531,7 +543,7 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
           </div>
         ) : (
           <p className="text-sm text-dark-400 mb-3">
-            Move the map to select your delivery location, then confirm.
+            Move the map to select your {skipDetailsForm ? 'store' : 'delivery'} location, then confirm.
           </p>
         )}
 
@@ -546,6 +558,7 @@ export default function GoogleMapPicker({ initialLat, initialLng, initialAddress
           <ChevronRight size={18} />
         </button>
       </div>
+      )}
 
     </div>
   );

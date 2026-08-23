@@ -279,18 +279,19 @@ function AddressDetailsForm({ geocodedData, lat, lng, initialValues, onBack, onS
 // ─────────────────────────────────────────────────────────────────────────────
 // Root: LocationPickerModal — manages step state
 // ─────────────────────────────────────────────────────────────────────────────
-export default function LocationPickerModal({ isOpen, onClose, onSave, initialValues, autoLocate }) {
+export default function LocationPickerModal({ 
+  isOpen, 
+  onClose, 
+  onSave, 
+  initialValues = null, 
+  autoLocate = false,
+  skipDetailsForm = false,
+  readOnly = false
+}) {
   const [step, setStep]                           = useState('map');
   const [confirmedLat, setConfirmedLat]           = useState(null);
   const [confirmedLng, setConfirmedLng]           = useState(null);
   const [confirmedAddress, setConfirmedAddress]   = useState(null);
-
-  const handleMapConfirm = useCallback((lat, lng, addressData) => {
-    setConfirmedLat(lat);
-    setConfirmedLng(lng);
-    setConfirmedAddress(addressData);
-    setStep('form');
-  }, []);
 
   const handleClose = () => {
     setStep('map');
@@ -299,6 +300,26 @@ export default function LocationPickerModal({ isOpen, onClose, onSave, initialVa
     setConfirmedAddress(null);
     onClose();
   };
+
+  const handleMapConfirm = useCallback((lat, lng, addressData) => {
+    if (skipDetailsForm) {
+      onSave({
+        latitude: lat,
+        longitude: lng,
+        line1: addressData.line1 || '',
+        city: addressData.city || '',
+        state: addressData.state || '',
+        pincode: addressData.pincode || '',
+        country: addressData.country || 'India',
+      });
+      handleClose();
+    } else {
+      setConfirmedLat(lat);
+      setConfirmedLng(lng);
+      setConfirmedAddress(addressData);
+      setStep('form');
+    }
+  }, [skipDetailsForm, onSave]);
 
   const handleSave = async (payload) => {
     await onSave(payload);
@@ -327,6 +348,8 @@ export default function LocationPickerModal({ isOpen, onClose, onSave, initialVa
             onConfirm={handleMapConfirm}
             onClose={handleClose}
             autoLocate={autoLocate}
+            skipDetailsForm={skipDetailsForm}
+            readOnly={readOnly}
           />
         ) : (
           <AddressDetailsForm

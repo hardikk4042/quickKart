@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, Edit2, Trash2 } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, MapPin } from 'lucide-react';
 import { storeService } from '@services/store.api';
 import toast from 'react-hot-toast';
+import LocationPickerModal from '@components/maps/LocationPickerModal';
 
 export default function AdminStores() {
   const [stores, setStores] = useState([]);
@@ -9,6 +10,7 @@ export default function AdminStores() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingStore, setEditingStore] = useState(null);
+  const [showMapPicker, setShowMapPicker] = useState(false);
   const [formData, setFormData] = useState({
     name: '', addressLine: '', city: '', state: '', pincode: '', latitude: 0, longitude: 0, isActive: true, managerId: ''
   });
@@ -47,6 +49,19 @@ export default function AdminStores() {
       setFormData({ name: '', addressLine: '', city: '', state: '', pincode: '', latitude: 0, longitude: 0, isActive: true, managerId: '' });
     }
     setShowModal(true);
+  };
+
+  const handleMapSave = async (payload) => {
+    setFormData(prev => ({
+      ...prev,
+      addressLine: payload.line1,
+      city: payload.city,
+      state: payload.state,
+      pincode: payload.pincode,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
+    }));
+    setShowMapPicker(false);
   };
 
   const handleSave = async (e) => {
@@ -139,6 +154,14 @@ export default function AdminStores() {
               <button onClick={() => setShowModal(false)} className="text-dark-400 hover:text-dark-900 text-2xl leading-none">&times;</button>
             </div>
             <form onSubmit={handleSave} className="p-6 space-y-4">
+              <button 
+                type="button" 
+                onClick={() => setShowMapPicker(true)} 
+                className="w-full py-2 bg-brand-50 text-brand-700 border border-brand-200 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-100 transition-colors"
+              >
+                <MapPin size={18} /> Pick Location on Map
+              </button>
+              
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-xs font-semibold text-dark-700 mb-1">Store Name</label>
@@ -189,6 +212,16 @@ export default function AdminStores() {
           </div>
         </div>
       )}
+
+      {/* Render LocationPickerModal outside the normal modal to take full screen */}
+      <LocationPickerModal 
+        isOpen={showMapPicker} 
+        onClose={() => setShowMapPicker(false)} 
+        onSave={handleMapSave}
+        initialValues={{ ...formData, line1: formData.addressLine }}
+        autoLocate={!editingStore && !formData.latitude}
+        skipDetailsForm={true}
+      />
     </div>
   );
 }

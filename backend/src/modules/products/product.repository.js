@@ -30,6 +30,13 @@ const productSelect = {
   unit: true,
   images: true,
   tags: true,
+  inventory: {
+    select: {
+      quantityOnHand: true,
+      quantityReserved: true,
+      lowStockThreshold: true,
+    }
+  },
   isActive: true,
   isFeatured: true,
   avgRating: true,

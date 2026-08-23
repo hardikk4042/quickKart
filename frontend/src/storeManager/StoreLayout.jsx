@@ -1,7 +1,9 @@
 // src/storeManager/StoreLayout.jsx
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, Package, Layers, Zap, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { LayoutDashboard, ShoppingBag, Package, Layers, Zap, LogOut, Truck, CheckSquare, Settings, Loader2, Store, Users, MapPin, PackageOpen } from 'lucide-react';
 import useAuthStore from '@store/authStore';
+import { storeService } from '@services/store.api';
 
 const NAV = [
   { to: '/store',          icon: LayoutDashboard, label: 'Dashboard' },

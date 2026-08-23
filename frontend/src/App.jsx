@@ -38,12 +38,14 @@ import AdminProducts    from '@/admin/AdminProducts';
 import AdminOrders      from '@/admin/AdminOrders';
 import AdminStores      from '@/admin/AdminStores';
 import AdminCategories  from '@/admin/AdminCategories';
+import AdminInventory   from '@/admin/AdminInventory';
 import AdminPlaceholder from '@/admin/AdminPlaceholder';
 
 // Store Manager
 import StoreLayout    from '@/storeManager/StoreLayout';
 import StoreDashboard from '@/storeManager/StoreDashboard';
 import StoreProducts  from '@/storeManager/StoreProducts';
+import StoreInventory from '@/storeManager/StoreInventory';
 
 // Delivery
 import DeliveryDashboard from '@/delivery/DeliveryDashboard';
@@ -105,7 +107,7 @@ function AppRoutes() {
         <Route path="orders"     element={<AdminOrders />} />
         <Route path="categories" element={<AdminCategories />} />
         <Route path="users"      element={<AdminPlaceholder title="Users"         icon="👥" />} />
-        <Route path="inventory"  element={<AdminPlaceholder title="Inventory"     icon="📦" />} />
+        <Route path="inventory"  element={<AdminInventory />} />
         <Route path="coupons"    element={<AdminPlaceholder title="Coupons"       icon="🏷️" />} />
         <Route path="stores"     element={<AdminStores />} />
         <Route path="delivery"   element={<AdminPlaceholder title="Delivery Partners" icon="🛵" />} />
@@ -118,7 +120,7 @@ function AppRoutes() {
         <Route index element={<StoreDashboard />} />
         <Route path="orders"    element={<AdminPlaceholder title="Store Orders"    icon="📋" />} />
         <Route path="products"  element={<StoreProducts />} />
-        <Route path="inventory" element={<AdminPlaceholder title="Store Inventory" icon="📦" />} />
+        <Route path="inventory" element={<StoreInventory />} />
       </Route>
 
       {/* ── Delivery Partner Routes ──────────────────── */}
