@@ -261,11 +261,14 @@ export default function StoreProducts() {
     }
   };
 
-  // Filtered products
-  const filtered = products.filter(p =>
-    !search || p.name.toLowerCase().includes(search.toLowerCase()) ||
-    (p.category?.name || '').toLowerCase().includes(search.toLowerCase())
-  );
+  // Filtered products list based on search term (name or category match)
+  const filtered = products.filter((p) => {
+    if (!search) return true;
+    const query = search.toLowerCase();
+    const matchesName = p.name.toLowerCase().includes(query);
+    const matchesCategory = (p.category?.name || '').toLowerCase().includes(query);
+    return matchesName || matchesCategory;
+  });
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
