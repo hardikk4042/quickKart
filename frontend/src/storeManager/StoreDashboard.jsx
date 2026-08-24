@@ -1,7 +1,8 @@
 /**
  * @file StoreDashboard.jsx
  * @description Store Manager Overview Dashboard component.
- * Displays assigned store info, order statistics, and incoming orders.
+ * Displays assigned store info, order statistics, low stock warnings, and incoming orders.
+ * Integrated with location picker and store service API.
  */
 import { useEffect, useState } from 'react';
 import { ShoppingBag, Clock, CheckCircle, AlertTriangle, Store, Navigation } from 'lucide-react';
