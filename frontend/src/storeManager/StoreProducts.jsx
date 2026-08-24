@@ -1,11 +1,9 @@
-// src/storeManager/StoreProducts.jsx
-//
-// Store Manager — Product Management page.
-// Allows the store manager to:
-//   - View all global products
-//   - Create a new product (backend links it to their store via Inventory)
-//   - Edit or deactivate/activate products they own (enforced by backend RBAC)
-//
+/**
+ * @file StoreProducts.jsx
+ * @description Store Manager Product Management page.
+ * Allows store managers to view global products, create new store items,
+ * and modify or toggle active status on products owned by their store (enforced by backend RBAC).
+ */
 import { useEffect, useState, useCallback } from 'react';
 import { Plus, Search, Edit2, ToggleLeft, ToggleRight, Package, RefreshCw, X, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
