@@ -33,6 +33,9 @@ export default function StoreInventory() {
   const [adjustReason, setAdjustReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  /**
+   * Fetches paginated store inventory items based on store ID, active page, and search query.
+   */
   const loadInventory = useCallback(async (currentStoreId) => {
     if (!currentStoreId) return;
     try {
