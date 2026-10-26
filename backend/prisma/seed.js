@@ -1,4 +1,4 @@
-const prisma = require('../src/config/database');
+after const prisma = require('../src/config/database');
 const bcrypt = require('bcryptjs');
 
 const BCRYPT_SALT_ROUNDS = 12;
